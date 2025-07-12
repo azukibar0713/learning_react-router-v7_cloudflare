@@ -5,6 +5,9 @@
   ],
   "exclude": [
     "/favicon.ico",
-    "/assets/*"
+    "/build/*",
+    "*.css",
+    "*.js",
+    "*.map"
   ]
 }
