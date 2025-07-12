@@ -4,9 +4,12 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "react-router dev",
+    "build:cloudflare": "NODE_ENV=production react-router build",
+    "dev": "NODE_ENV=development react-router dev",
+    "dev:local": "NODE_ENV=development USE_LOCAL_DB=true react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "preview": "npm run build && npm run start"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20250712.0",
