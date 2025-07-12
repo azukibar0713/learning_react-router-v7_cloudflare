@@ -1,87 +1,89 @@
-# Welcome to React Router!
+# React Router v7 + Cloudflare 書籍管理アプリ
 
-A modern, production-ready template for building full-stack React applications using React Router.
+React Router v7とCloudflare D1を使った書籍管理システムです。
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## 機能
 
-## Features
+- 📚 書籍の一覧表示
+- ➕ 書籍の新規登録
+- 📖 書籍の詳細表示
+- 🗑️ 書籍の削除
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## 技術構成
 
-## Getting Started
+- **フロントエンド**: React Router v7 + TailwindCSS
+- **バックエンド**: React Router v7 SSR
+- **データベース**: Cloudflare D1（本番）+ SQLite（ローカル）
+- **デプロイ**: Cloudflare Pages
 
-### Installation
-
-Install the dependencies:
+## ローカル開発
 
 ```bash
 npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+http://localhost:5173 でアクセス
 
-## Building for Production
+ローカル開発時は自動的にSQLiteを使用し、サンプルデータが投入されます。
 
-Create a production build:
+## Cloudflareデプロイ
+
+### 1. D1データベース作成
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com/d1) でD1データベースを作成
+2. データベース名: `books-db`
+3. データベースIDをコピー
+
+### 2. 設定ファイル更新
+
+`wrangler.toml`の該当箇所のコメントアウトを解除し、データベースIDを設定：
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "books-db"
+database_id = "実際のデータベースID"
+migrations_dir = "./migrations"
+```
+
+### 3. マイグレーション実行
 
 ```bash
-npm run build
+wrangler d1 migrations apply books-db --remote
 ```
 
-## Deployment
+### 4. Cloudflare Pagesデプロイ
 
-### Docker Deployment
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) → Pages
+2. "Create a project" → "Connect to Git"
+3. このリポジトリを選択
+4. Build settings:
+   - Build command: `npm run build`
+   - Build output directory: `build/client`
+5. Settings → Functions → D1 database bindings:
+   - Variable name: `DB`
+   - D1 database: 作成した`books-db`を選択
 
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## プロジェクト構成
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+├── app/
+│   ├── lib/
+│   │   ├── db.ts          # データベース操作
+│   │   ├── sqlite.ts      # ローカル開発用SQLite
+│   │   └── context.ts     # DB接続管理
+│   ├── routes/
+│   │   ├── home.tsx       # ホームページ
+│   │   ├── books.tsx      # 書籍一覧
+│   │   ├── books.new.tsx  # 書籍登録
+│   │   └── books.$id.tsx  # 書籍詳細
+│   └── routes.ts          # ルーティング設定
+├── migrations/
+│   └── 0001_create_books_table.sql
+└── wrangler.toml          # Cloudflare設定
 ```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router v7 and Cloudflare.
