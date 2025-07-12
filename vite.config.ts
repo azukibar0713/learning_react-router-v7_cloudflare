@@ -4,21 +4,8 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    tailwindcss(), 
-    reactRouter({
-      // Cloudflare Pages用の設定
-      future: {
-        unstable_singleFetch: true,
-      },
-    }), 
-    tsconfigPaths()
-  ],
-  build: {
-    sourcemap: false, // Cloudflareでのビルドサイズを削減
-  },
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   ssr: {
     external: ["better-sqlite3"],
-    target: "webworker", // Cloudflare Workers環境用
   },
 });
