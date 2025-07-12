@@ -6,6 +6,7 @@ pages_build_output_dir = "./build/client"
 
 [build]
 command = "npm run build"
+cwd = ""
 
 [[d1_databases]]
 binding = "DB"
